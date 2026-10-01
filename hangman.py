@@ -31,6 +31,8 @@ def play_game(secret_word):
                 for i in range(len(secret_word)):
                     if answer == secret_word[i]:
                         display[i] = answer
+                        if '_' not in display:
+                            break
                 print(f"{display} / {penalty} penalty")
             else:
                 penalty += 1
