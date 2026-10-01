@@ -19,6 +19,9 @@ def play_game(secret_word):
 
     while penalty < 12:
         answer_org = input("$> ")
+        if not answer_org.isalpha():
+            print("Please enter a letter or a word")
+            continue
         answer = answer_org.upper()
         attempts += 1
 
