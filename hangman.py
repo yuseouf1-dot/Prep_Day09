@@ -70,18 +70,18 @@ def check_high_score(secret_word, final_score, attempts):
         sys.stderr.write(f"Error: can't find the score.txt\n")
         sys.exit(1)
 
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        sys.stderr.write("Error: missing argument\n")
+        sys.exit(1)
 
-if len(sys.argv) < 2:
-    sys.stderr.write("Error: missing argument\n")
-    sys.exit(1)
-
-filename = sys.argv[1]
-
-word = get_word_from_file(filename)
-secret_word = random.choice(word).upper()
-print(f"Secret word: {secret_word}") # (테스트용)
-    
-final_score, attempts = play_game(secret_word)
-
-if final_score < 12:
-    check_high_score(secret_word, final_score, attempts)
+    filename = sys.argv[1]
+    word = get_word_from_file(filename)
+    secret_word = random.choice(word).upper()
+    print(f"Secret word: {secret_word}") # (테스트용)
+        
+    final_score, attempts = play_game(secret_word)
+        
+    # 승리했을 때만 기록
+    if final_score < 12:
+        check_high_score(secret_word, final_score, attempts)
