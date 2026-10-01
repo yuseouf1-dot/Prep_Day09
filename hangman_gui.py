@@ -1,5 +1,7 @@
 import pygame
 import sys
+import random
+from hangman import get_word_from_file, check_high_score, play_game
 
 def create_buttons():
     star_x = 50
@@ -27,8 +29,12 @@ pygame.init()
 title_font = pygame.font.SysFont("arial", 60)
 screen = pygame.display.set_mode((800, 600)) 
 pygame.display.set_caption("My Hangman Game")
-display = ['_', '_', 'P', '_', 'E']
-answer = "APPLE"
+
+words_list = get_word_from_file("words.txt") # 단어장 파일 이름
+secret_word = random.choice(words_list).upper()
+display = ['_'] * len(secret_word)
+penalty = 0
+attempts = 0
 
 running = True
 buttons = create_buttons()
@@ -45,6 +51,12 @@ while running:
                 if btn["rect"].collidepoint(mouse_pos):
                     if not btn["clicked"]:
                         btn["clicked"] = True
+                        
+                        clicked_letter = btn["letter"] 
+                        
+                        display, penalty, attempts = play_game(
+                            secret_word, display, penalty, attempts, clicked_letter
+                        )
 
     screen.fill((255, 255, 255))
 

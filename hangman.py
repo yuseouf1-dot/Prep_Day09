@@ -12,46 +12,31 @@ def get_word_from_file(filename):
         sys.stderr.write(f"Error: '{filename}' I can't find the file\n")
         sys.exit(1)
     
-def play_game(secret_word):
+def play_game(secret_word, display, penalty, attempts, answer_org):
     penalty = 0
     display = ['_'] * len(secret_word)
     attempts = 0
 
     while penalty < 12:
-        answer_org = input("$> ")
-        if not answer_org.isalpha():
-            print("Please enter a letter or a word")
-            continue
         answer = answer_org.upper()
         attempts += 1
 
         if len(answer) == 1:
             if answer in secret_word:
-                print(f"Found one '{answer}'")
                 for i in range(len(secret_word)):
                     if answer == secret_word[i]:
                         display[i] = answer
-                        if '_' not in display:
-                            break
-                print(f"{display} / {penalty} penalty")
+                       
             else:
                 penalty += 1
-                print(f"No '{answer}' found")
-                print(f"{display} / {penalty} penalty")
-                
         else:
             if answer == secret_word:
-                print(f"{answer}: correct guess - {penalty} penalties")
-                break
+                for i in range(len(secret_word)):
+                    display[i] = secret_word[i]
             else:
                 penalty += 5
-                print(f"{answer}: incorrect guess")
-                print(f"{display} / {penalty} penalties")
 
-    if penalty >= 12:
-        print("You lose")
-
-    return penalty, attempts
+    return display, penalty, attempts
 
 def check_high_score(secret_word, final_score, attempts):
     try:
@@ -82,6 +67,22 @@ if __name__ == "__main__":
         
     final_score, attempts = play_game(secret_word)
         
-    # 승리했을 때만 기록
-    if final_score < 12:
-        check_high_score(secret_word, final_score, attempts)
+    display = ['_'] * len(secret_word)
+    penalty = 0
+    attempts = 0
+
+    # 밖으로 빠져나온 while문과 input!
+    while penalty < 12 and '_' in display:
+        answer_org = input("$> ")
+        if not answer_org: continue
+        
+        # 입력값을 백엔드 함수(play_game)로 던져주고 결과를 받음
+        display, penalty, attempts = play_game(secret_word, display, penalty, attempts, answer_org)
+        
+        print(f"{display} / {penalty} penalty")
+
+    if penalty >= 12:
+        print("You lose")
+    else:
+        print("You win!")
+        check_high_score(secret_word, penalty, attempts)
