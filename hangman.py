@@ -50,24 +50,17 @@ def play_game(secret_word):
 
 def check_high_score(secret_word, final_score, attempts):
     try:
-         with open("score.txt", 'r', encoding='utf-8') as file:
-            content = file.read().split()
+        with open("score.txt", 'r', encoding='utf-8') as file:
+            old_word, old_attempts, old_date = file.read().split()
             today = datetime.date.today().strftime("%Y-%m-%d")
-        
-            if not content:
-                with open("score.txt", 'w', encoding='utf-8') as file:
-                    file.write(f"{secret_word} {attempts} {today}")
-                    print(f"Best ever ! You guessed '{secret_word}' in {attempts} attempts.")
-                    
-            else:
-                old_word, old_score, old_date = content
-                if final_score < int(old_score):
-                    with open("score.txt", 'w', encoding='utf-8') as file:
-                        file.write(f"{secret_word} {final_score} {today}")
-                        print(f"Best ever ! You guessed '{secret_word}' in {attempts} attempts.")
-                else:
-                    print(f"You guessed '{secret_word}' in {attempts} attempts, but the record from {today} is {old_score} attempts.")
-        
+      
+        if attempts < int(old_attempts):
+            with open("score.txt", 'w', encoding='utf-8') as file:
+                file.write(f"{secret_word} {attempts} {today}")
+                print(f"Best ever ! You guessed '{secret_word}' in {attempts} attempts.")
+        else:
+                print(f"You guessed '{secret_word}' in {attempts} attempts, but the record from {old_date} is {old_attempts} attempts.")
+
     except FileNotFoundError:
         sys.stderr.write(f"Error: can't find the score.txt\n")
         sys.exit(1)
@@ -84,5 +77,6 @@ secret_word = random.choice(word).upper()
 print(f"Secret word: {secret_word}") # (테스트용)
     
 final_score, attempts = play_game(secret_word)
-    
-check_high_score(secret_word, final_score, attempts)
+
+if final_score < 12:
+    check_high_score(secret_word, final_score, attempts)
